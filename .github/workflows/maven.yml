@@ -1,0 +1,29 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: JDK ${{matrix.java-version}} on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        java-version: [ 11, 17 ]
+        os: [ ubuntu-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout
+
+      - uses: actions/setup-java@v4
+        name: Set up JDK ${{ matrix.java-version }} - ${{ matrix.os }}
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: temurin
+
+      - name: Build and test with Maven
+        run: mvn verify
